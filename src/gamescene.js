@@ -8,63 +8,66 @@ export class GameScene extends Phaser.Scene {
 
     this.matter.add.mouseSpring();
 
+    this.canJump = false;
+
     this.unicycle = new Unicycle(this, 400, 100);
 
     this.matter.world.add(this.unicycle);
 
-    //const rider = this.matter.add.car(400, 10, 80, 20, 20);
-
     const group = this.matter.world.nextGroup(true);
 
-    const bridge = this.matter.add.stack(160, 290, 15, 1, 0, 0, (x, y) =>
-      Phaser.Physics.Matter.Matter.Bodies.rectangle(x - 20, y, 53, 20, {
+    const bridge = this.matter.add.stack(160, 290, 18, 1, 0, 0, (x, y) =>
+      Phaser.Physics.Matter.Matter.Bodies.rectangle(x - 20, y, 53, 30, {
         collisionFilter: { group: group },
+        label: "rope",
         chamfer: 5,
         density: 0.005,
-        frictionAir: 0.05,
+        frictionAir: 0.01,
       }),
     );
 
     this.matter.add.chain(bridge, 0.3, 0, -0.3, 0, {
-      stiffness: 0.5,
+      label: "bridge",
+      stiffness: 0.7,
+      damping: 0.01,
       length: 0,
       render: {
         visible: false,
       },
     });
 
-    /*const stack = this.matter.add.stack(250, 50, 6, 3, 0, 0, (x, y) =>
-      Phaser.Physics.Matter.Matter.Bodies.rectangle(
-        x,
-        y,
-        50,
-        50,
-        Phaser.Math.Between(20, 40),
-      ),
-    );*/
-
-    this.matter.add.rectangle(30, 490, 220, 380, {
+    this.matter.add.rectangle(0, 500, 160, 380, {
       isStatic: true,
       chamfer: { radius: 20 },
-    }),
-      this.matter.add.rectangle(770, 490, 220, 380, {
-        isStatic: true,
-        chamfer: { radius: 20 },
-      }),
-      this.matter.add.worldConstraint(bridge.bodies[0], 2, 0.9, {
-        pointA: { x: 140, y: 300 },
-        pointB: { x: -25, y: 0 },
-      });
+    });
+    this.matter.add.rectangle(800, 500, 160, 380, {
+      isStatic: true,
+      chamfer: { radius: 20 },
+    });
+    this.matter.add.worldConstraint(bridge.bodies[0], 2, 0.9, {
+      pointA: { x: 80, y: 340 },
+      pointB: { x: -25, y: 0 },
+    });
 
     this.matter.add.worldConstraint(
       bridge.bodies[bridge.bodies.length - 1],
       2,
       0.9,
       {
-        pointA: { x: 660, y: 300 },
+        pointA: { x: 720, y: 340 },
         pointB: { x: 25, y: 0 },
       },
     );
+
+    this.matter.world.on("collisionactive", (event) => {
+      if (
+        event.pairs.some(
+          (pair) => pair.bodyA.label === "wheel" && pair.bodyB.label === "rope",
+        )
+      ) {
+        this.canJump = true;
+      }
+    });
   }
 
   update() {
@@ -83,8 +86,12 @@ export class GameScene extends Phaser.Scene {
     }
 
     if (keys.up.isDown) {
-    } else if (keys.down.isDown) {
-      this.unicycle.wheel.force = { x: this.unicycle.wheel.force.x, y: 0.2 };
+    } else if (keys.down.isDown && this.canJump) {
+      this.unicycle.wheel.force = {
+        x: 0,
+        y: 0.25,
+      };
+      this.canJump = false;
     }
 
     if (cursors.left.isDown) {

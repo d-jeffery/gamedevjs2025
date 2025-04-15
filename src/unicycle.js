@@ -4,6 +4,7 @@ export class Unicycle {
 
     this.wheel = scene.matter.add.circle(x, y, 20, {
       collisionFilter: { group: group },
+      label: "wheel",
       density: 0.01,
       friction: 0.8,
       restitution: 0.5,
