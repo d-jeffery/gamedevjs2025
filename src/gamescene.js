@@ -16,36 +16,38 @@ export class GameScene extends Phaser.Scene {
 
     const group = this.matter.world.nextGroup(true);
 
-    const bridge = this.matter.add.stack(160, 290, 18, 1, 0, 0, (x, y) =>
+    const bridge = this.matter.add.stack(160, 290, 14, 1, 0, 0, (x, y) =>
       Phaser.Physics.Matter.Matter.Bodies.rectangle(x - 20, y, 53, 30, {
         collisionFilter: { group: group },
         label: "rope",
         chamfer: 5,
         density: 0.005,
         frictionAir: 0.01,
+        restitution: 0.85,
+        // restitutionAir: 0.5,
       }),
     );
 
     this.matter.add.chain(bridge, 0.3, 0, -0.3, 0, {
       label: "bridge",
-      stiffness: 0.7,
-      damping: 0.01,
+      stiffness: 0.2,
+      damping: 0.05,
       length: 0,
       render: {
-        visible: false,
+        visible: true,
       },
     });
 
-    this.matter.add.rectangle(0, 500, 160, 380, {
+    this.matter.add.rectangle(0, 500, 160, 250, {
       isStatic: true,
       chamfer: { radius: 20 },
     });
-    this.matter.add.rectangle(800, 500, 160, 380, {
+    this.matter.add.rectangle(800, 500, 160, 250, {
       isStatic: true,
       chamfer: { radius: 20 },
     });
     this.matter.add.worldConstraint(bridge.bodies[0], 2, 0.9, {
-      pointA: { x: 80, y: 340 },
+      pointA: { x: 80, y: 400 },
       pointB: { x: -25, y: 0 },
     });
 
@@ -54,7 +56,7 @@ export class GameScene extends Phaser.Scene {
       2,
       0.9,
       {
-        pointA: { x: 720, y: 340 },
+        pointA: { x: 720, y: 400 },
         pointB: { x: 25, y: 0 },
       },
     );
