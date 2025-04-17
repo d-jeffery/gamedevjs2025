@@ -1,4 +1,5 @@
 import { Unicycle } from "./unicycle.js";
+import { Star } from "./star.js";
 
 export class GameScene extends Phaser.Scene {
   preload() {}
@@ -6,9 +7,17 @@ export class GameScene extends Phaser.Scene {
   create() {
     this.matter.world.setBounds();
 
-    this.matter.add.mouseSpring();
-
     this.canJump = false;
+
+    this.score = 0;
+
+    this.cursors = this.input.keyboard.createCursorKeys();
+    this.keys = this.input.keyboard.addKeys({
+      up: "W",
+      left: "A",
+      down: "S",
+      right: "D",
+    });
 
     this.unicycle = new Unicycle(this, 400, 100);
 
@@ -17,18 +26,17 @@ export class GameScene extends Phaser.Scene {
     const group = this.matter.world.nextGroup(true);
 
     const bridge = this.matter.add.stack(160, 290, 14, 1, 0, 0, (x, y) =>
-      Phaser.Physics.Matter.Matter.Bodies.rectangle(x - 20, y, 53, 30, {
+      Phaser.Physics.Matter.Matter.Bodies.rectangle(x - 20, y, 53, 20, {
         collisionFilter: { group: group },
         label: "rope",
-        chamfer: 5,
+        chamfer: 1,
         density: 0.005,
         frictionAir: 0.01,
-        restitution: 0.85,
-        // restitutionAir: 0.5,
+        restitution: 1,
       }),
     );
 
-    this.matter.add.chain(bridge, 0.3, 0, -0.3, 0, {
+    this.chain = this.matter.add.chain(bridge, 0.3, 0, -0.3, 0, {
       label: "bridge",
       stiffness: 0.2,
       damping: 0.05,
@@ -61,45 +69,61 @@ export class GameScene extends Phaser.Scene {
       },
     );
 
+    setInterval(() => {
+      const s = new Star(this, 50 + Math.random() * 700, 10);
+    }, 1000);
+
     this.matter.world.on("collisionactive", (event) => {
-      if (
-        event.pairs.some(
-          (pair) => pair.bodyA.label === "wheel" && pair.bodyB.label === "rope",
-        )
-      ) {
-        this.canJump = true;
+      this.canJump = event.pairs.some(
+        (pair) => pair.bodyA.label === "wheel" && pair.bodyB.label === "rope",
+      );
+
+      for (const pair of event.pairs) {
+        if (pair.bodyB.label === "star") {
+          if (pair.bodyA.label === "head") {
+            this.score++;
+          }
+          this.matter.world.remove(pair.bodyB);
+        }
       }
+    });
+
+    this.scoreText = this.add.text(10, 10, "Score: 0", {
+      font: "20px Arial",
+      fill: "#ffffff", // Text color
     });
   }
 
   update() {
-    const cursors = this.input.keyboard.createCursorKeys();
-    const keys = this.input.keyboard.addKeys({
-      up: "W",
-      left: "A",
-      down: "S",
-      right: "D",
-    });
+    const Body = Phaser.Physics.Matter.Matter.Body;
 
-    if (keys.left.isDown) {
-      this.unicycle.wheel.torque = -0.2;
-    } else if (keys.right.isDown) {
-      this.unicycle.wheel.torque = 0.2;
+    this.scoreText.setText("Score: " + this.score);
+
+    if (this.keys.left.isDown) {
+      Body.setAngularVelocity(this.unicycle.wheel, -0.05);
+    } else if (this.keys.right.isDown) {
+      Body.setAngularVelocity(this.unicycle.wheel, 0.05);
     }
 
-    if (keys.up.isDown) {
-    } else if (keys.down.isDown && this.canJump) {
-      this.unicycle.wheel.force = {
+    if (this.keys.up.isDown && this.canJump) {
+      Body.applyForce(this.unicycle.wheel, this.unicycle.wheel.position, {
         x: 0,
-        y: 0.25,
-      };
+        y: -0.1,
+      });
+      this.canJump = false;
+    } else if (this.keys.down.isDown && this.canJump) {
+      //this.unicycle.wheel.velocity = { x: 0, y: -10 };
+      Body.applyForce(this.unicycle.wheel, this.unicycle.wheel.position, {
+        x: 0,
+        y: 0.12,
+      });
       this.canJump = false;
     }
 
-    if (cursors.left.isDown) {
-      this.unicycle.frame.torque = -0.1;
-    } else if (cursors.right.isDown) {
-      this.unicycle.frame.torque = 0.1;
+    if (this.cursors.left.isDown) {
+      Body.setAngularVelocity(this.unicycle.frame, -0.01);
+    } else if (this.cursors.right.isDown) {
+      Body.setAngularVelocity(this.unicycle.frame, 0.01);
     }
   }
 }
