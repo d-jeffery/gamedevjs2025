@@ -16,13 +16,13 @@ export class Unicycle {
 
     const cycle = Composite.create({ label: "cycle" });
 
-    const head = Bodies.circle(x, y - 100, 20, {
+
+    const head = Bodies.circle(x, y, 20, {
       label: "head",
       collisionFilter: {
         group: group,
       },
       density: 0.0005,
-      mass: 0,
     });
 
     const frame = Bodies.rectangle(x, y, width, height, {
@@ -34,7 +34,6 @@ export class Unicycle {
         radius: height * 0.5,
       },
       density: 0.0005,
-      mass: 0,
       restitution: 0.5,
     });
 
@@ -59,9 +58,9 @@ export class Unicycle {
       bodyB: frame,
       pointB: { x: wheelAOffset, y: wheelYOffset },
       bodyA: wheel,
-      angularStiffness: 0.9,
-      stiffness: 1,
-      length: 0,
+      angularStiffness: 0.5,
+      stiffness: 0.5,
+      length: 0
     });
 
     Composite.addBody(cycle, head);
@@ -69,6 +68,7 @@ export class Unicycle {
     Composite.addBody(cycle, wheel);
     Composite.addConstraint(cycle, axel);
     Composite.addConstraint(cycle, neck);
+    Composite.rotate(cycle, Math.PI / 180 * 270, { x: x, y: y });
 
     scene.matter.world.add(cycle);
 

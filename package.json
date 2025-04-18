@@ -1,15 +1,36 @@
 {
-  "name": "walk-the-line",
-  "version": "1.0.0",
-  "description": "A gamedev.js 2025 entry",
-  "main": "src/index.js",
-  "repository": "https://github.com/d-jeffery/gamedevjs2025.git",
-  "author": "Daniel Jeffery <danielajeffery@gmail.com>",
-  "license": "MIT",
-  "private": true,
-  "devDependencies": {
-    "phaser": "^3.88.2",
-    "prettier": "^3.5.3"
-  },
-  "type": "module"
+    "name": "template-esbuild",
+    "description": "A Phaser 3 template using esbuild.",
+    "version": "1.2.1",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "dev": "node log.js dev & node esbuild/dev.server.js -w",
+        "build": "node log.js build & node esbuild/build.prod.js",
+        "watch": "node log.js build & node esbuild/dev.server.js -w",
+        "dev-nolog": "node esbuild/dev.server.js -w",
+        "build-nolog": "node esbuild/build.prod.js"
+    },
+    "author": "Phaser Studio <support@phaser.io> (https://phaser.io/)",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/phaserjs/template-esbuild.git"
+    },
+    "bugs": {
+        "url": "https://github.com/phaserjs/template-esbuild/issues"
+    },
+    "homepage": "https://github.com/phaserjs/template-esbuild#readme",
+    "license": "MIT",
+    "dependencies": {
+        "phaser": "^3.88.2",
+        "randomcolor": "^0.6.2"
+    },
+    "devDependencies": {
+        "@jgoz/esbuild-plugin-livereload": "^2.0.5",
+        "esbuild": "^0.21.2",
+        "esbuild-plugin-clean": "^1.0.1",
+        "esbuild-plugin-copy": "^2.1.1",
+        "esbuild-plugin-inline-image": "^0.0.9",
+        "esbuild-serve": "^1.0.1"
+    }
 }

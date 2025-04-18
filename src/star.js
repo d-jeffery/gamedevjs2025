@@ -1,3 +1,5 @@
+import Phaser from "phaser";
+
 export class Star {
   constructor(scene, x, y) {
     const Body = Phaser.Physics.Matter.Matter.Body;
@@ -7,7 +9,7 @@ export class Star {
     this.body = scene.matter.add.circle(x, y, 10, {
       collisionFilter: { group: group },
       label: "star",
-      frictionAir: 1,
+      frictionAir: 0.2,
     });
 
     this.scene = scene;
