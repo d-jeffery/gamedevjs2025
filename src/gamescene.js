@@ -86,6 +86,8 @@ export class GameScene extends Phaser.Scene {
     }
 
 
+
+
     // Generate fans
     for (let i = 0; i < 14; i++) {
       new Fan(this, 75+ 50 * i, 500);
@@ -151,6 +153,13 @@ export class GameScene extends Phaser.Scene {
     graphics.fillStyle(0xffff00, 0.5)
     this.spotlight = graphics.fillCircle(this.unicycle.frame.position.x, this.unicycle.frame.position.y, 100);
 
+    graphics.fillStyle(0x000000,1);
+    graphics.fillCircle(85, 400, 12)
+    graphics.fillCircle(715, 400, 12)
+
+    this.renderObject(this.pole1, 0x000000 )
+    this.renderObject(this.pole2, 0x000000 );
+
     // Rerender the cycle
     this.renderedCycle.forEach((cycle) => {
       cycle.destroy()
@@ -176,9 +185,6 @@ export class GameScene extends Phaser.Scene {
       font: "20px Arial",
       fill: "#ffffff", // Text color
     });
-
-    this.renderObject(this.pole1, 0x000000 )
-    this.renderObject(this.pole2, 0x000000 );
 
     this.unicycle.cycle.bodies.forEach(body => {
       this.renderedCycle.push(this.renderObject(body, 0xffffff))
