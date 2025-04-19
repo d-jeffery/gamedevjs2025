@@ -30,24 +30,20 @@ export class GameScene extends Phaser.Scene {
 
     const group = this.matter.world.nextGroup(true);
 
-    const bridge = this.matter.add.stack(140, 400, 14, 1, 0, 0, (x, y) => {
-          return Phaser.Physics.Matter.Matter.Bodies.rectangle(x - 20, y, 53, 20, {
+    const bridge = this.matter.add.stack(140, 400, 18, 1, 0, 0, (x, y) => {
+          return Phaser.Physics.Matter.Matter.Bodies.rectangle(x - 20, y, 52, 25, {
             collisionFilter: {group: group},
             label: "rope",
             chamfer: 1,
-            density: 0.005,
-            restitution: 1,
           });
         }
     );
 
     this.renderedChain = [];
+    this.renderedCycle = [];
 
     this.chain = this.matter.add.chain(bridge, 0.3, 0, -0.3, 0, {
       label: "bridge",
-      stiffness: 0.2,
-      damping: 0.05,
-      length: 0,
     });
 
     this.pole1 = this.matter.add.rectangle(0, 500, 160, 250, {
@@ -78,6 +74,17 @@ export class GameScene extends Phaser.Scene {
     setInterval(() => {
       const s = new Star(this, 50 + Math.random() * 700, 10);
     }, 1000);
+
+    const graphics = this.add.graphics();
+    for(let i = 0; i < 10; i++) {
+      if (i % 2 === 0) {
+        graphics.fillStyle(0xffff00, 0.25)
+      } else {
+        graphics.fillStyle(0xff0000, 0.25)
+      }
+      graphics.fillRect(80 * i, -20, 80, 600);
+    }
+
 
     // Generate fans
     for (let i = 0; i < 14; i++) {
@@ -111,9 +118,9 @@ export class GameScene extends Phaser.Scene {
     this.scoreText.setText("Score: " + this.score);
 
     if (this.keys.left.isDown) {
-      Body.setAngularVelocity(this.unicycle.wheel, -0.05 * delta);
+      Body.setAngularVelocity(this.unicycle.wheel, -0.18);
     } else if (this.keys.right.isDown) {
-      Body.setAngularVelocity(this.unicycle.wheel, 0.05* delta);
+      Body.setAngularVelocity(this.unicycle.wheel, 0.18);
     }
 
     if (this.keys.up.isDown && this.canJump) {
@@ -125,16 +132,33 @@ export class GameScene extends Phaser.Scene {
     } else if (this.keys.down.isDown && this.canJump) {
       Body.applyForce(this.unicycle.wheel, this.unicycle.wheel.position, {
         x: 0,
-        y: 0.12,
+        y: 0.05,
       });
       this.canJump = false;
     }
 
     if (this.cursors.left.isDown) {
-      Body.setAngularVelocity(this.unicycle.frame, -0.01 * delta);
+      Body.setAngularVelocity(this.unicycle.frame, -0.05);
     } else if (this.cursors.right.isDown) {
-      Body.setAngularVelocity(this.unicycle.frame, 0.01 * delta);
+      Body.setAngularVelocity(this.unicycle.frame, 0.05);
     }
+
+
+    const graphics = this.add.graphics();
+    if (this.spotlight) {
+      this.spotlight.destroy()
+    }
+    graphics.fillStyle(0xffff00, 0.5)
+    this.spotlight = graphics.fillCircle(this.unicycle.frame.position.x, this.unicycle.frame.position.y, 100);
+
+    // Rerender the cycle
+    this.renderedCycle.forEach((cycle) => {
+      cycle.destroy()
+    })
+    this.renderedCycle = [];
+    this.unicycle.cycle.bodies.forEach(body => {
+      this.renderedCycle.push(this.renderObject(body, 0x000000));
+    })
 
     // Rerender the chain
     this.renderedChain.forEach((chain) => {
@@ -142,7 +166,7 @@ export class GameScene extends Phaser.Scene {
     })
     this.renderedChain = [];
     this.chain.bodies.forEach(body => {
-      this.renderedChain.push(this.renderObject(body, 0xffffff));
+      this.renderedChain.push(this.renderObject(body, 0x000000));
     })
 
   }
@@ -153,8 +177,12 @@ export class GameScene extends Phaser.Scene {
       fill: "#ffffff", // Text color
     });
 
-    this.renderObject(this.pole1, 0xff0000)
-    this.renderObject(this.pole2, 0xff0000);
+    this.renderObject(this.pole1, 0x000000 )
+    this.renderObject(this.pole2, 0x000000 );
+
+    this.unicycle.cycle.bodies.forEach(body => {
+      this.renderedCycle.push(this.renderObject(body, 0xffffff))
+    })
 
     this.chain.bodies.forEach(body => {
       this.renderedChain.push(this.renderObject(body, 0xffffff));

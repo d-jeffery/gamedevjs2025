@@ -16,13 +16,11 @@ export class Unicycle {
 
     const cycle = Composite.create({ label: "cycle" });
 
-
-    const head = Bodies.circle(x, y, 20, {
+    const head = Bodies.circle(x + width/2, y, 20, {
       label: "head",
       collisionFilter: {
         group: group,
       },
-      density: 0.0005,
     });
 
     const frame = Bodies.rectangle(x, y, width, height, {
@@ -33,8 +31,6 @@ export class Unicycle {
       chamfer: {
         radius: height * 0.5,
       },
-      density: 0.0005,
-      restitution: 0.5,
     });
 
     const wheel = Bodies.circle(x + wheelAOffset, y + wheelYOffset, wheelSize, {
@@ -42,15 +38,12 @@ export class Unicycle {
       collisionFilter: {
         group: group,
       },
-      friction: 0.5,
     });
 
     const neck = Constraint.create({
       bodyB: head,
       pointA: { x: 50, y: 0 },
       bodyA: frame,
-      angularStiffness: 1,
-      stiffness: 1,
       length: 0,
     });
 
@@ -58,8 +51,6 @@ export class Unicycle {
       bodyB: frame,
       pointB: { x: wheelAOffset, y: wheelYOffset },
       bodyA: wheel,
-      angularStiffness: 0.5,
-      stiffness: 0.5,
       length: 0
     });
 
@@ -76,49 +67,6 @@ export class Unicycle {
     this.frame = frame;
     this.wheel = wheel;
     this.scene = scene;
-
-    /*const group = scene.matter.world.nextGroup(true);
-
-    this.wheel = scene.matter.add.circle(x, y, 30, {
-      collisionFilter: { group: group },
-      label: "wheel",
-      density: 0.005,
-      friction: 1,
-      restitution: 0.8,
-    });
-
-    this.head = scene.matter.add.circle(x, y - 100, 20, {
-      collisionFilter: { group: group },
-      density: 0.001,
-      friction: 1,
-      restitution: 0.8,
-    });
-
-    this.frame = scene.matter.add.rectangle(x, y - 50, 10, 100, {
-      collisionFilter: { group: group },
-      chamfer: 5,
-      density: 0.01,
-      friction: 1,
-      restitution: 0.5,
-    });
-
-    scene.matter.add.constraint(this.wheel, this.frame, 0, 0, {
-      angularStiffness: 0.9,
-      pointA: { x: 0, y: 0 },
-      pointB: { x: 0, y: 50 },
-    });
-
-    scene.matter.add.constraint(this.head, this.frame, 0, 0, {
-      angularStiffness: 1,
-      pointA: { x: 0, y: 0 },
-      pointB: { x: 0, y: -50 },
-    });
-
-    // this.compoundBody = Phaser.Physics.Matter.Matter.Body.create({
-    //   parts: [this.head, this.frame, this.wheel],
-    // });
-
-    this.scene = scene;
-     */
   }
+
 }

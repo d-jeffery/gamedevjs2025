@@ -9,7 +9,7 @@ export class Star {
     this.body = scene.matter.add.circle(x, y, 10, {
       collisionFilter: { group: group },
       label: "star",
-      frictionAir: 0.2,
+      isSensor: true,
     });
 
     this.scene = scene;
