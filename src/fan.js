@@ -1,23 +1,34 @@
-import randomColor from "randomcolor"
-
 export class Fan {
     constructor(scene, x, y) {
-        const graphics = scene.add.graphics();
+        const skins = [0xfcd380, 0xf1c27d, 0xe0ac69, 0xc68642, 0x8d5524];
+        this.skin = skins[Math.floor(Math.random() * skins.length)];
+        this.shirt = Math.random() * 4294967295;
 
-        const shirt = Math.random() * 4294967295;
-
-        graphics.fillStyle(shirt, 1);
-
-        graphics.lineStyle(2, shirt, 1);
-
-        graphics.fillRoundedRect(x-20, y, 40, 60)
-
-        graphics.fillStyle(0xfcd380, 1);
-
-        graphics.lineStyle(2, 0xfcd380, 1);
-
-        graphics.fillCircle(x, y, 15)
-
+        this.x = x;
+        this.y = this.origin = y;
+        this.offset = Math.random() * 100
         this.scene = scene;
+
+        this.graphic = this.scene.add.graphics();
+        this.draw()
+    }
+
+    draw() {
+        this.graphic.clear()
+
+        this.graphic.fillStyle(this.shirt, 1);
+        this.graphic.lineStyle(2, this.shirt, 1);
+        this.graphic.fillRoundedRect(this.x-20, this.y, 40, 60)
+        this.graphic.fillStyle(this.skin, 1);
+        this.graphic.lineStyle(2, this.skin, 1);
+        this.graphic.fillCircle(this.x, this.y, 15);
+    }
+
+    update(time, delta) {
+
+        this.y = Phaser.Math.Linear(this.origin, this.origin -10, Math.cos(time / 100 + this.offset))
+
+        this.graphic.clear()
+        this.draw()
     }
 }

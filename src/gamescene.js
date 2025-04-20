@@ -3,9 +3,14 @@ import Phaser from "phaser";
 import { Unicycle } from "./unicycle.js";
 import { Star } from "./star.js";
 import {Fan} from "./fan.js";
+import {renderObject} from "./utils.js";
 
 export class GameScene extends Phaser.Scene {
-  preload() {}
+  preload() {
+    this.load.audio('theme', [
+      './assets/Entry_of_Gladiators.mp3',
+    ]);
+  }
 
   create() {
     this.matter.world.setBounds();
@@ -39,6 +44,8 @@ export class GameScene extends Phaser.Scene {
         }
     );
 
+    this.fans = [];
+    this.otherObjects = [];
     this.renderedChain = [];
     this.renderedCycle = [];
 
@@ -85,15 +92,12 @@ export class GameScene extends Phaser.Scene {
       graphics.fillRect(80 * i, -20, 80, 600);
     }
 
-
-
-
     // Generate fans
     for (let i = 0; i < 14; i++) {
-      new Fan(this, 75+ 50 * i, 500);
+      this.fans.push(new Fan(this, 75+ 50 * i, 500))
     }
     for (let i = 0; i < 13; i++) {
-      new Fan(this, 100+ 50 * i, 550);
+      this.fans.push(new Fan(this, 100+ 50 * i, 550))
     }
 
     this.matter.world.on("collisionactive", (event) => {
@@ -112,6 +116,13 @@ export class GameScene extends Phaser.Scene {
     });
 
     this.draw()
+
+    const music = this.sound.add('theme', {
+        volume: 0.25,
+        loop: true,
+    });
+    music.play();
+    this.sound.pauseOnBlur = true;
   }
 
   update(time, delta) {
@@ -144,7 +155,10 @@ export class GameScene extends Phaser.Scene {
     } else if (this.cursors.right.isDown) {
       Body.setAngularVelocity(this.unicycle.frame, 0.05);
     }
-
+    //
+    this.fans.forEach((fan) => {
+      fan.update(time, delta);
+    })
 
     const graphics = this.add.graphics();
     if (this.spotlight) {
@@ -153,12 +167,13 @@ export class GameScene extends Phaser.Scene {
     graphics.fillStyle(0xffff00, 0.5)
     this.spotlight = graphics.fillCircle(this.unicycle.frame.position.x, this.unicycle.frame.position.y, 100);
 
+    // TODO: draw once and destroy when needed
     graphics.fillStyle(0x000000,1);
-    graphics.fillCircle(85, 400, 12)
-    graphics.fillCircle(715, 400, 12)
+    this.otherObjects.push(graphics.fillCircle(85, 400, 12));
+    this.otherObjects.push(graphics.fillCircle(715, 400, 12));
 
-    this.renderObject(this.pole1, 0x000000 )
-    this.renderObject(this.pole2, 0x000000 );
+    this.otherObjects.push(renderObject(this, this.pole1, 0x000000 ))
+    this.otherObjects.push(renderObject(this, this.pole2, 0x000000 ));
 
     // Rerender the cycle
     this.renderedCycle.forEach((cycle) => {
@@ -166,7 +181,7 @@ export class GameScene extends Phaser.Scene {
     })
     this.renderedCycle = [];
     this.unicycle.cycle.bodies.forEach(body => {
-      this.renderedCycle.push(this.renderObject(body, 0x000000));
+      this.renderedCycle.push(renderObject(this, body, 0x000000));
     })
 
     // Rerender the chain
@@ -175,7 +190,7 @@ export class GameScene extends Phaser.Scene {
     })
     this.renderedChain = [];
     this.chain.bodies.forEach(body => {
-      this.renderedChain.push(this.renderObject(body, 0x000000));
+      this.renderedChain.push(renderObject(this, body, 0x000000));
     })
 
   }
@@ -187,33 +202,12 @@ export class GameScene extends Phaser.Scene {
     });
 
     this.unicycle.cycle.bodies.forEach(body => {
-      this.renderedCycle.push(this.renderObject(body, 0xffffff))
+      this.renderedCycle.push(renderObject(this, body, 0xffffff))
     })
 
     this.chain.bodies.forEach(body => {
-      this.renderedChain.push(this.renderObject(body, 0xffffff));
+      this.renderedChain.push(renderObject(this, body, 0xffffff));
     })
   }
 
-  renderObject(obj, fillColor ) {
-    const graphics = this.add.graphics();
-
-    graphics.fillStyle(fillColor, 1);
-
-    graphics.lineStyle(2, fillColor, 1);
-
-    // Draw the initial shape
-    const vertices = obj.vertices;
-    graphics.beginPath();
-    graphics.moveTo(vertices[0].x, vertices[0].y);
-    for (let i = 1; i < vertices.length; i++) {
-      graphics.lineTo(vertices[i].x, vertices[i].y);
-    }
-    graphics.closePath();
-    graphics.fillPath();
-
-    graphics.body = obj.body
-
-    return graphics;
-  }
 }
