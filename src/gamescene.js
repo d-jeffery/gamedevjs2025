@@ -177,25 +177,9 @@ export class GameScene extends Phaser.Scene {
       this.unicycle.frame.position.y,
     );
 
-    // Rerender the cycle
-    this.renderedCycle.forEach((cycle) => {
-      cycle.destroy();
-    });
-    this.renderedCycle = [];
-    this.unicycle.cycle.bodies.forEach((body) => {
-      this.renderedCycle.push(renderObject(this, body, 0x000000));
-    });
-
-    // Rerender the chain
-    this.renderedChain.forEach((chain) => {
-      chain.destroy();
-    });
-    this.renderedChain = [];
-    this.chain.bodies.forEach((body) => {
-      this.renderedChain.push(renderObject(this, body, 0x000000));
-    });
-
     this.unicycle.update(time, delta);
+
+    this.draw();
   }
 
   draw() {
@@ -204,12 +188,15 @@ export class GameScene extends Phaser.Scene {
       fill: "#ffffff", // Text color
     });
 
-    this.unicycle.cycle.bodies.forEach((body) => {
-      this.renderedCycle.push(renderObject(this, body, 0xffffff));
-    });
+    this.unicycle.draw();
 
+    // Rerender the chain
+    this.renderedChain.forEach((chain) => {
+      chain.destroy();
+    });
+    this.renderedChain = [];
     this.chain.bodies.forEach((body) => {
-      this.renderedChain.push(renderObject(this, body, 0xffffff));
+      this.renderedChain.push(renderObject(this, body, 0x000000));
     });
   }
 }

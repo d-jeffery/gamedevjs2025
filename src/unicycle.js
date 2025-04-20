@@ -1,3 +1,5 @@
+import { renderObject, renderObjectStroke } from "./utils.js";
+
 export class Unicycle {
   constructor(scene, x, y) {
     const Body = Phaser.Physics.Matter.Matter.Body;
@@ -11,6 +13,8 @@ export class Unicycle {
     const wheelAOffset = -width * 0.5;
     const wheelYOffset = 0;
 
+    this.graphics = [];
+
     const head = scene.matter.add.circle(x, y, 15, {
       label: "head",
       collisionFilter: {
@@ -20,6 +24,16 @@ export class Unicycle {
 
     const frame = scene.matter.add.rectangle(x, y, width, height, {
       label: "frame",
+      collisionFilter: {
+        group: group,
+      },
+      chamfer: {
+        radius: height * 0.5,
+      },
+    });
+
+    const seat = scene.matter.add.rectangle(x - 10, y, 15, 40, {
+      label: "seat",
       collisionFilter: {
         group: group,
       },
@@ -62,23 +76,49 @@ export class Unicycle {
       pointA: { x: 20, y: 0 },
     });
 
+    const seatBolt = scene.matter.add.constraint(frame, seat, 0, 0, {
+      pointB: { x: 15, y: 0 },
+    });
+
     const cycle = scene.matter.composite.create({
       label: "cycle",
-      bodies: [head, body, frame, wheel],
-      constraints: [neck, axel],
+      bodies: [head, body, frame, wheel, seat],
+      constraints: [neck, axel, chest, seatBolt],
     });
 
     Composite.rotate(cycle, (Math.PI / 180) * 270, { x: x, y: y });
 
     this.cycle = cycle;
+    this.head = head;
     this.body = body;
     this.frame = frame;
+    this.seat = seat;
     this.wheel = wheel;
     this.scene = scene;
   }
 
   update(time, delta) {
     this.body.inverseInertia = 0;
+    this.body.inertia = Infinity;
     this.body.angle = this.frame.angle;
+
+    this.seat.inverseInertia = 0;
+    this.seat.inertia = Infinity;
+    this.seat.angle = this.frame.angle;
+  }
+
+  draw() {
+    const color = 0x000000;
+
+    this.graphics.forEach((cycle) => {
+      cycle.destroy();
+    });
+
+    this.graphics.push(renderObject(this.scene, this.head, color));
+    this.graphics.push(renderObject(this.scene, this.body, color));
+    this.graphics.push(renderObject(this.scene, this.frame, color));
+    this.graphics.push(renderObject(this.scene, this.seat, color));
+    this.graphics.push(renderObjectStroke(this.scene, this.wheel, color, 10));
+    // this.graphics.push(renderWheel(this.scene, this.wheel, color, 10));
   }
 }
