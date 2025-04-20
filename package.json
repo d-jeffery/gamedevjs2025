@@ -9,7 +9,8 @@
         "build": "node log.js build & node esbuild/build.prod.js",
         "watch": "node log.js build & node esbuild/dev.server.js -w",
         "dev-nolog": "node esbuild/dev.server.js -w",
-        "build-nolog": "node esbuild/build.prod.js"
+        "build-nolog": "node esbuild/build.prod.js",
+        "watch-nolog": "node esbuild/dev.server.js -w"
     },
     "author": "Phaser Studio <support@phaser.io> (https://phaser.io/)",
     "repository": {
@@ -23,6 +24,7 @@
     "license": "MIT",
     "dependencies": {
         "phaser": "^3.88.2",
+        "phaser3-rex-plugins": "^1.80.15",
         "randomcolor": "^0.6.2"
     },
     "devDependencies": {

@@ -1,4 +1,6 @@
 import Phaser from "phaser";
+import RoundRectanglePlugin from 'phaser3-rex-plugins/plugins/roundrectangle-plugin.js';
+
 import { GameScene } from "./gamescene.js";
 
 const config = {
@@ -13,6 +15,13 @@ const config = {
       // debug: true,
       debugBodyColor: 0xffffff,
     },
+  },
+  plugins: {
+    global: [{
+      key: 'rexRoundRectanglePlugin',
+      plugin: RoundRectanglePlugin,
+      start: true
+    }]
   },
   scene: new GameScene(),
 };

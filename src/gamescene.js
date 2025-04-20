@@ -45,7 +45,6 @@ export class GameScene extends Phaser.Scene {
     );
 
     this.fans = [];
-    this.otherObjects = [];
     this.renderedChain = [];
     this.renderedCycle = [];
 
@@ -82,23 +81,37 @@ export class GameScene extends Phaser.Scene {
       const s = new Star(this, 50 + Math.random() * 700, 10);
     }, 1000);
 
-    const graphics = this.add.graphics();
     for(let i = 0; i < 10; i++) {
       if (i % 2 === 0) {
-        graphics.fillStyle(0xffff00, 0.25)
+        this.add.rectangle(80 * i, 300, 80, 600, 0xffff00, 0.25)
       } else {
-        graphics.fillStyle(0xff0000, 0.25)
+        this.add.rectangle(80 * i, 300, 80, 600, 0xff0000, 0.25)
       }
-      graphics.fillRect(80 * i, -20, 80, 600);
     }
+    this.add.rectangle(400, 560, 800, 80, 0x351e10, 1)
+
 
     // Generate fans
     for (let i = 0; i < 14; i++) {
-      this.fans.push(new Fan(this, 75+ 50 * i, 500))
+      const fan = new Fan(this, 75+ 50 * i, 500)
+      this.fans.push(fan)
     }
     for (let i = 0; i < 13; i++) {
-      this.fans.push(new Fan(this, 100+ 50 * i, 550))
+      const fan = new Fan(this, 100+ 50 * i, 550)
+      this.fans.push(fan)
     }
+
+    this.spotlight = this.add.circle(
+        this.unicycle.frame.position.x,
+        this.unicycle.frame.position.y,
+        100, 0xffff00, 0.5);
+
+    // Chain ends
+    this.add.circle(85, 400, 12, 0x000000, 1).setToTop()
+    this.add.circle(715, 400, 12, 0x000000, 1).setToTop()
+
+    this.add.rexRoundRectangle(0, 500, 160, 250, 20, 0x000000, 1);
+    this.add.rexRoundRectangle(800, 500, 160, 250, 20, 0x000000, 1);
 
     this.matter.world.on("collisionactive", (event) => {
       this.canJump = event.pairs.some(
@@ -160,20 +173,7 @@ export class GameScene extends Phaser.Scene {
       fan.update(time, delta);
     })
 
-    const graphics = this.add.graphics();
-    if (this.spotlight) {
-      this.spotlight.destroy()
-    }
-    graphics.fillStyle(0xffff00, 0.5)
-    this.spotlight = graphics.fillCircle(this.unicycle.frame.position.x, this.unicycle.frame.position.y, 100);
-
-    // TODO: draw once and destroy when needed
-    graphics.fillStyle(0x000000,1);
-    this.otherObjects.push(graphics.fillCircle(85, 400, 12));
-    this.otherObjects.push(graphics.fillCircle(715, 400, 12));
-
-    this.otherObjects.push(renderObject(this, this.pole1, 0x000000 ))
-    this.otherObjects.push(renderObject(this, this.pole2, 0x000000 ));
+    this.spotlight.setPosition(this.unicycle.frame.position.x, this.unicycle.frame.position.y)
 
     // Rerender the cycle
     this.renderedCycle.forEach((cycle) => {

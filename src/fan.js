@@ -16,6 +16,7 @@ export class Fan {
     draw() {
         this.graphic.clear()
 
+        this.graphic.alpha = 1;
         this.graphic.fillStyle(this.shirt, 1);
         this.graphic.lineStyle(2, this.shirt, 1);
         this.graphic.fillRoundedRect(this.x-20, this.y, 40, 60)
