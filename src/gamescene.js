@@ -29,7 +29,7 @@ export class GameScene extends Phaser.Scene {
       right: "D",
     });
 
-    this.unicycle = new Unicycle(this, 45, 275);
+    this.unicycle = new Unicycle(this, 45, 245);
 
     this.matter.world.add(this.unicycle);
 
@@ -52,11 +52,11 @@ export class GameScene extends Phaser.Scene {
       label: "bridge",
     });
 
-    this.pole1 = this.matter.add.rectangle(0, 500, 160, 250, {
+    this.matter.add.rectangle(0, 500, 160, 250, {
       isStatic: true,
       chamfer: { radius: 20 },
     });
-    this.pole2 = this.matter.add.rectangle(800, 500, 160, 250, {
+    this.matter.add.rectangle(800, 500, 160, 250, {
       isStatic: true,
       chamfer: { radius: 20 },
     });
@@ -83,13 +83,12 @@ export class GameScene extends Phaser.Scene {
 
     for(let i = 0; i < 10; i++) {
       if (i % 2 === 0) {
-        this.add.rectangle(80 * i, 300, 80, 600, 0xffff00, 0.25)
+        this.add.rectangle(80 * i + 40, 300, 80, 600, 0xffff00, 0.25)
       } else {
-        this.add.rectangle(80 * i, 300, 80, 600, 0xff0000, 0.25)
+        this.add.rectangle(80 * i + 40, 300, 80, 600, 0xff0000, 0.25)
       }
     }
     this.add.rectangle(400, 560, 800, 80, 0x351e10, 1)
-
 
     // Generate fans
     for (let i = 0; i < 14; i++) {
