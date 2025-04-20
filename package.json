@@ -10,7 +10,8 @@
         "watch": "node log.js build & node esbuild/dev.server.js -w",
         "dev-nolog": "node esbuild/dev.server.js -w",
         "build-nolog": "node esbuild/build.prod.js",
-        "watch-nolog": "node esbuild/dev.server.js -w"
+        "watch-nolog": "node esbuild/dev.server.js -w",
+        "format": "yarn prettier --write src/**/*.{js,jsx,ts,tsx,json,css,scss,html}"
     },
     "author": "Phaser Studio <support@phaser.io> (https://phaser.io/)",
     "repository": {
@@ -23,13 +24,16 @@
     "homepage": "https://github.com/phaserjs/template-esbuild#readme",
     "license": "MIT",
     "devDependencies": {
-        "phaser": "^3.88.2",
-        "phaser3-rex-plugins": "^1.80.15",
         "@jgoz/esbuild-plugin-livereload": "^2.0.5",
         "esbuild": "^0.21.2",
         "esbuild-plugin-clean": "^1.0.1",
         "esbuild-plugin-copy": "^2.1.1",
         "esbuild-plugin-inline-image": "^0.0.9",
-        "esbuild-serve": "^1.0.1"
+        "esbuild-serve": "^1.0.1",
+        "phaser": "^3.88.2",
+        "phaser3-rex-plugins": "^1.80.15"
+    },
+    "dependencies": {
+        "prettier": "^3.5.3"
     }
 }

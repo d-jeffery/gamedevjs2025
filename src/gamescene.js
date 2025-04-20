@@ -2,14 +2,12 @@ import Phaser from "phaser";
 
 import { Unicycle } from "./unicycle.js";
 import { Star } from "./star.js";
-import {Fan} from "./fan.js";
-import {renderObject} from "./utils.js";
+import { Fan } from "./fan.js";
+import { renderObject } from "./utils.js";
 
 export class GameScene extends Phaser.Scene {
   preload() {
-    this.load.audio('theme', [
-      './assets/Entry_of_Gladiators.mp3',
-    ]);
+    this.load.audio("theme", ["./assets/Entry_of_Gladiators.mp3"]);
   }
 
   create() {
@@ -36,13 +34,12 @@ export class GameScene extends Phaser.Scene {
     const group = this.matter.world.nextGroup(true);
 
     const bridge = this.matter.add.stack(140, 400, 18, 1, 0, 0, (x, y) => {
-          return Phaser.Physics.Matter.Matter.Bodies.rectangle(x - 20, y, 52, 25, {
-            collisionFilter: {group: group},
-            label: "rope",
-            chamfer: 1,
-          });
-        }
-    );
+      return Phaser.Physics.Matter.Matter.Bodies.rectangle(x - 20, y, 52, 25, {
+        collisionFilter: { group: group },
+        label: "rope",
+        chamfer: 1,
+      });
+    });
 
     this.fans = [];
     this.renderedChain = [];
@@ -81,33 +78,36 @@ export class GameScene extends Phaser.Scene {
       const s = new Star(this, 50 + Math.random() * 700, 10);
     }, 1000);
 
-    for(let i = 0; i < 10; i++) {
+    for (let i = 0; i < 10; i++) {
       if (i % 2 === 0) {
-        this.add.rectangle(80 * i + 40, 300, 80, 600, 0xffff00, 0.25)
+        this.add.rectangle(80 * i + 40, 300, 80, 600, 0xffff00, 0.25);
       } else {
-        this.add.rectangle(80 * i + 40, 300, 80, 600, 0xff0000, 0.25)
+        this.add.rectangle(80 * i + 40, 300, 80, 600, 0xff0000, 0.25);
       }
     }
-    this.add.rectangle(400, 560, 800, 80, 0x351e10, 1)
+    this.add.rectangle(400, 560, 800, 80, 0x351e10, 1);
 
     // Generate fans
     for (let i = 0; i < 14; i++) {
-      const fan = new Fan(this, 75+ 50 * i, 500)
-      this.fans.push(fan)
+      const fan = new Fan(this, 75 + 50 * i, 500);
+      this.fans.push(fan);
     }
     for (let i = 0; i < 13; i++) {
-      const fan = new Fan(this, 100+ 50 * i, 550)
-      this.fans.push(fan)
+      const fan = new Fan(this, 100 + 50 * i, 550);
+      this.fans.push(fan);
     }
 
     this.spotlight = this.add.circle(
-        this.unicycle.frame.position.x,
-        this.unicycle.frame.position.y,
-        100, 0xffff00, 0.5);
+      this.unicycle.frame.position.x,
+      this.unicycle.frame.position.y,
+      100,
+      0xffff00,
+      0.5,
+    );
 
     // Chain ends
-    this.add.circle(85, 400, 12, 0x000000, 1).setToTop()
-    this.add.circle(715, 400, 12, 0x000000, 1).setToTop()
+    this.add.circle(85, 400, 12, 0x000000, 1).setToTop();
+    this.add.circle(715, 400, 12, 0x000000, 1).setToTop();
 
     this.add.rexRoundRectangle(0, 500, 160, 250, 20, 0x000000, 1);
     this.add.rexRoundRectangle(800, 500, 160, 250, 20, 0x000000, 1);
@@ -127,11 +127,11 @@ export class GameScene extends Phaser.Scene {
       }
     });
 
-    this.draw()
+    this.draw();
 
-    const music = this.sound.add('theme', {
-        volume: 0.25,
-        loop: true,
+    const music = this.sound.add("theme", {
+      volume: 0.25,
+      loop: true,
     });
     music.play();
     this.sound.pauseOnBlur = true;
@@ -170,28 +170,32 @@ export class GameScene extends Phaser.Scene {
     //
     this.fans.forEach((fan) => {
       fan.update(time, delta);
-    })
+    });
 
-    this.spotlight.setPosition(this.unicycle.frame.position.x, this.unicycle.frame.position.y)
+    this.spotlight.setPosition(
+      this.unicycle.frame.position.x,
+      this.unicycle.frame.position.y,
+    );
 
     // Rerender the cycle
     this.renderedCycle.forEach((cycle) => {
-      cycle.destroy()
-    })
+      cycle.destroy();
+    });
     this.renderedCycle = [];
-    this.unicycle.cycle.bodies.forEach(body => {
+    this.unicycle.cycle.bodies.forEach((body) => {
       this.renderedCycle.push(renderObject(this, body, 0x000000));
-    })
+    });
 
     // Rerender the chain
     this.renderedChain.forEach((chain) => {
-      chain.destroy()
-    })
+      chain.destroy();
+    });
     this.renderedChain = [];
-    this.chain.bodies.forEach(body => {
+    this.chain.bodies.forEach((body) => {
       this.renderedChain.push(renderObject(this, body, 0x000000));
-    })
+    });
 
+    this.unicycle.update(time, delta);
   }
 
   draw() {
@@ -200,13 +204,12 @@ export class GameScene extends Phaser.Scene {
       fill: "#ffffff", // Text color
     });
 
-    this.unicycle.cycle.bodies.forEach(body => {
-      this.renderedCycle.push(renderObject(this, body, 0xffffff))
-    })
+    this.unicycle.cycle.bodies.forEach((body) => {
+      this.renderedCycle.push(renderObject(this, body, 0xffffff));
+    });
 
-    this.chain.bodies.forEach(body => {
+    this.chain.bodies.forEach((body) => {
       this.renderedChain.push(renderObject(this, body, 0xffffff));
-    })
+    });
   }
-
 }

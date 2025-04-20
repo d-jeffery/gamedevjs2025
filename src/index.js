@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import RoundRectanglePlugin from 'phaser3-rex-plugins/plugins/roundrectangle-plugin.js';
+import RoundRectanglePlugin from "phaser3-rex-plugins/plugins/roundrectangle-plugin.js";
 
 import { GameScene } from "./gamescene.js";
 
@@ -7,21 +7,23 @@ const config = {
   type: Phaser.AUTO,
   width: 800,
   height: 600,
-  parent: 'game-container',
+  parent: "game-container",
   physics: {
     default: "matter",
     matter: {
       gravity: { y: 1.0 },
-      // debug: true,
+      //debug: true,
       debugBodyColor: 0xffffff,
     },
   },
   plugins: {
-    global: [{
-      key: 'rexRoundRectanglePlugin',
-      plugin: RoundRectanglePlugin,
-      start: true
-    }]
+    global: [
+      {
+        key: "rexRoundRectanglePlugin",
+        plugin: RoundRectanglePlugin,
+        start: true,
+      },
+    ],
   },
   scene: new GameScene(),
 };

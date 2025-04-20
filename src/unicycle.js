@@ -1,6 +1,5 @@
 export class Unicycle {
   constructor(scene, x, y) {
-
     const Body = Phaser.Physics.Matter.Matter.Body;
     const Composite = Phaser.Physics.Matter.Matter.Composite;
 
@@ -12,7 +11,7 @@ export class Unicycle {
     const wheelAOffset = -width * 0.5;
     const wheelYOffset = 0;
 
-    const head = scene.matter.add.circle(x, y, 20, {
+    const head = scene.matter.add.circle(x, y, 15, {
       label: "head",
       collisionFilter: {
         group: group,
@@ -20,44 +19,66 @@ export class Unicycle {
     });
 
     const frame = scene.matter.add.rectangle(x, y, width, height, {
-        label: "frame",
-        collisionFilter: {
-            group: group,
-        },
-        chamfer: {
-            radius: height * 0.5,
-        },
+      label: "frame",
+      collisionFilter: {
+        group: group,
+      },
+      chamfer: {
+        radius: height * 0.5,
+      },
     });
 
-    const wheel = scene.matter.add.circle(x + wheelAOffset, y + wheelYOffset, wheelSize, {
+    const body = scene.matter.add.rectangle(x + 40, y, 60, 40, {
+      label: "body",
+      collisionFilter: {
+        group: group,
+      },
+      chamfer: {
+        radius: 20,
+      },
+    });
+
+    const wheel = scene.matter.add.circle(
+      x + wheelAOffset,
+      y + wheelYOffset,
+      wheelSize,
+      {
         label: "wheel",
         collisionFilter: {
-            group: group,
+          group: group,
         },
-    });
+      },
+    );
 
     const neck = scene.matter.add.constraint(frame, head, 0, 0, {
-        pointA: { x: 60, y: 0 },
-        length: 0,
-    })
+      pointA: { x: 60, y: 0 },
+    });
 
     const axel = scene.matter.add.constraint(wheel, frame, 0, 0, {
       pointB: { x: wheelAOffset, y: wheelYOffset },
-      length: 0
-    })
-
-    const cycle = scene.matter.composite.create({
-        label: "cycle",
-        bodies:[head, frame, wheel],
-        constraints: [neck, axel],
-
     });
 
-      Composite.rotate(cycle, Math.PI / 180 * 270, { x: x, y: y });
+    const chest = scene.matter.add.constraint(frame, body, 0, 0, {
+      pointA: { x: 20, y: 0 },
+    });
 
-      this.cycle = cycle;
-      this.frame = frame;
-      this.wheel = wheel;
-      this.scene = scene;
+    const cycle = scene.matter.composite.create({
+      label: "cycle",
+      bodies: [head, body, frame, wheel],
+      constraints: [neck, axel],
+    });
+
+    Composite.rotate(cycle, (Math.PI / 180) * 270, { x: x, y: y });
+
+    this.cycle = cycle;
+    this.body = body;
+    this.frame = frame;
+    this.wheel = wheel;
+    this.scene = scene;
+  }
+
+  update(time, delta) {
+    this.body.inverseInertia = 0;
+    this.body.angle = this.frame.angle;
   }
 }
