@@ -1,10 +1,10 @@
 import { renderObject, renderObjectStroke } from "./utils.js";
 
+const Body = Phaser.Physics.Matter.Matter.Body;
+const Composite = Phaser.Physics.Matter.Matter.Composite;
+
 export class Unicycle {
   constructor(scene, x, y) {
-    const Body = Phaser.Physics.Matter.Matter.Body;
-    const Composite = Phaser.Physics.Matter.Matter.Composite;
-
     const width = 140;
     const height = 10;
     const wheelSize = 30;

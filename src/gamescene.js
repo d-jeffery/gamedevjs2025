@@ -1,5 +1,7 @@
 import Phaser from "phaser";
 
+const { Composite, World } = Phaser.Physics.Matter.Matter;
+
 import { Unicycle } from "./unicycle.js";
 import { Star } from "./star.js";
 import { Fan } from "./fan.js";
@@ -18,6 +20,7 @@ export class GameScene extends Phaser.Scene {
     this.canJump = false;
 
     this.score = 0;
+    this.lives = 3;
 
     this.cursors = this.input.keyboard.createCursorKeys();
     this.keys = this.input.keyboard.addKeys({
@@ -43,7 +46,6 @@ export class GameScene extends Phaser.Scene {
 
     this.fans = [];
     this.renderedChain = [];
-    this.renderedCycle = [];
 
     this.chain = this.matter.add.chain(bridge, 0.3, 0, -0.3, 0, {
       label: "bridge",
@@ -111,6 +113,22 @@ export class GameScene extends Phaser.Scene {
 
     this.add.rexRoundRectangle(0, 500, 160, 250, 20, 0x000000, 1);
     this.add.rexRoundRectangle(800, 500, 160, 250, 20, 0x000000, 1);
+    /*
+    this.matter.world.on("collisionstart", (event) => {
+      if (
+        event.pairs.some(
+          (pair) => pair.bodyA.label === "head" && pair.bodyB.label === "rope",
+        )
+      ) {
+        this.lives--;
+        this.unicycle.graphics.forEach((graphic) => {
+          graphic.destroy();
+        });
+        this.unicycle.cycle.bodies.forEach((body) => {
+          this.matter.world.remove(body);
+        });
+      }
+    });*/
 
     this.matter.world.on("collisionactive", (event) => {
       this.canJump = event.pairs.some(
@@ -127,6 +145,21 @@ export class GameScene extends Phaser.Scene {
       }
     });
 
+    let hearts = "";
+    for (let i = 0; i < this.lives; i++) {
+      hearts = hearts.concat("❤️");
+    }
+
+    this.lifeText = this.add.text(10, 10, hearts, {
+      font: "34px Arial",
+      fill: "#ffffff", // Text color
+    });
+
+    this.scoreText = this.add.text(10, 50, "Score: 0", {
+      font: "34px Arial",
+      fill: "#ffffff", // Text color
+    });
+
     this.draw();
 
     const music = this.sound.add("theme", {
@@ -141,6 +174,11 @@ export class GameScene extends Phaser.Scene {
     const Body = Phaser.Physics.Matter.Matter.Body;
 
     this.scoreText.setText("Score: " + this.score);
+    let hearts = "";
+    for (let i = 0; i < this.lives; i++) {
+      hearts = hearts.concat("❤️");
+    }
+    this.lifeText.setText(hearts);
 
     if (this.keys.left.isDown) {
       Body.setAngularVelocity(this.unicycle.wheel, -0.18);
@@ -183,11 +221,6 @@ export class GameScene extends Phaser.Scene {
   }
 
   draw() {
-    this.scoreText = this.add.text(10, 10, "Score: 0", {
-      font: "20px Arial",
-      fill: "#ffffff", // Text color
-    });
-
     this.unicycle.draw();
 
     // Rerender the chain
