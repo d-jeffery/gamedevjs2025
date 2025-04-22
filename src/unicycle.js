@@ -15,14 +15,24 @@ export class Unicycle {
 
     this.graphics = [];
 
-    const head = scene.matter.add.circle(x, y, 15, {
+    const head = scene.matter.add.circle(x - 40, y, 15, {
       label: "head",
       collisionFilter: {
         group: group,
       },
     });
 
-    const frame = scene.matter.add.rectangle(x, y, width, height, {
+    const body = scene.matter.add.rectangle(x, y, 60, 40, {
+      label: "body",
+      collisionFilter: {
+        group: group,
+      },
+      chamfer: {
+        radius: 20,
+      },
+    });
+
+    const frame = scene.matter.add.rectangle(x, y, 140, 10, {
       label: "frame",
       collisionFilter: {
         group: group,
@@ -39,16 +49,6 @@ export class Unicycle {
       },
       chamfer: {
         radius: height * 0.5,
-      },
-    });
-
-    const body = scene.matter.add.rectangle(x + 40, y, 60, 40, {
-      label: "body",
-      collisionFilter: {
-        group: group,
-      },
-      chamfer: {
-        radius: 20,
       },
     });
 
@@ -122,3 +122,66 @@ export class Unicycle {
     // this.graphics.push(renderWheel(this.scene, this.wheel, color, 10));
   }
 }
+
+/*
+    const head = scene.matter.add.circle(x, y, 15, {
+      label: "head",
+      collisionFilter: {
+        group: group,
+      },
+    });
+
+    const body = scene.matter.add.rectangle(x, y + 40, 40, 60, {
+      label: "body",
+      collisionFilter: {
+        group: group,
+      },
+      chamfer: {
+        radius: 20,
+      },
+    });
+
+    const neck = scene.matter.add.constraint(head, body, 40, 1, {
+      pointA: { x: 0, y: 0 },
+      pointB: { x: -10, y: 0 },
+      angularStiffness: 1,
+    });
+
+    const neck2 = scene.matter.add.constraint(head, body, 40, 1, {
+      pointA: { x: 0, y: 0 },
+      pointB: { x: 10, y: 0 },
+      angularStiffness: 1,
+    });
+
+    const frame = scene.matter.add.rectangle(x, y, 10, 120, {
+      label: "frame",
+      collisionFilter: {
+        group: group,
+      },
+      chamfer: {
+        radius: height * 0.5,
+      },
+    });
+
+    const wheel = scene.matter.add.circle(
+      x + wheelAOffset,
+      y + wheelYOffset,
+      wheelSize,
+      {
+        label: "wheel",
+        collisionFilter: {
+          group: group,
+        },
+      },
+    );
+
+    const axel = scene.matter.add.constraint(frame, wheel, 0, 0, {
+      pointA: { x: 0, y: 60 },
+      angularStiffness: 0,
+    });
+
+    const cycle = scene.matter.composite.create({
+      label: "cycle",
+      bodies: [head, body, frame, wheel],
+      constraints: [neck, neck2, axel],
+    });*/

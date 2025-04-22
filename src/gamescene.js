@@ -21,6 +21,8 @@ export class GameScene extends Phaser.Scene {
 
     this.score = 0;
     this.lives = 3;
+    this.width = 800;
+    this.height = 600;
 
     this.cursors = this.input.keyboard.createCursorKeys();
     this.keys = this.input.keyboard.addKeys({
@@ -28,6 +30,7 @@ export class GameScene extends Phaser.Scene {
       left: "A",
       down: "S",
       right: "D",
+      space: "SPACE",
     });
 
     this.unicycle = new Unicycle(this, 45, 245);
@@ -113,7 +116,6 @@ export class GameScene extends Phaser.Scene {
 
     this.add.rexRoundRectangle(0, 500, 160, 250, 20, 0x000000, 1);
     this.add.rexRoundRectangle(800, 500, 160, 250, 20, 0x000000, 1);
-    /*
     this.matter.world.on("collisionstart", (event) => {
       if (
         event.pairs.some(
@@ -121,14 +123,8 @@ export class GameScene extends Phaser.Scene {
         )
       ) {
         this.lives--;
-        this.unicycle.graphics.forEach((graphic) => {
-          graphic.destroy();
-        });
-        this.unicycle.cycle.bodies.forEach((body) => {
-          this.matter.world.remove(body);
-        });
       }
-    });*/
+    });
 
     this.matter.world.on("collisionactive", (event) => {
       this.canJump = event.pairs.some(
@@ -179,6 +175,28 @@ export class GameScene extends Phaser.Scene {
       hearts = hearts.concat("❤️");
     }
     this.lifeText.setText(hearts);
+
+    if (this.lives <= 0) {
+      this.matter.pause();
+      this.add
+        .text(this.width / 2, this.height / 3, "Game Over", {
+          font: "64px Arial",
+          fill: "#ffffff",
+        })
+        .setOrigin(0.5, 0.5);
+      this.add
+        .text(this.width / 2, this.height / 2, "'Space' to Play again", {
+          font: "32px Arial",
+          fill: "#ffffff",
+        })
+        .setOrigin(0.5, 0.5);
+
+      if (this.keys.space.isDown) {
+        this.registry.destroy();
+        this.events.off();
+        this.scene.restart();
+      }
+    }
 
     if (this.keys.left.isDown) {
       Body.setAngularVelocity(this.unicycle.wheel, -0.18);
