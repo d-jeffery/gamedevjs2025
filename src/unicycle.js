@@ -1,7 +1,9 @@
 import { renderObject, renderObjectStroke } from "./utils.js";
 
 const Body = Phaser.Physics.Matter.Matter.Body;
+const Bodies = Phaser.Physics.Matter.Matter.Bodies;
 const Composite = Phaser.Physics.Matter.Matter.Composite;
+const Constraint = Phaser.Physics.Matter.Matter.Constraint;
 
 export class Unicycle {
   constructor(scene, x, y) {
@@ -15,6 +17,100 @@ export class Unicycle {
 
     this.graphics = [];
 
+    const head = Bodies.circle(x - 40, y, 15, {
+      label: "head",
+      collisionFilter: {
+        group: group,
+      },
+    });
+
+    const body = Bodies.rectangle(x, y, 60, 40, {
+      label: "body",
+      collisionFilter: {
+        group: group,
+      },
+      chamfer: {
+        radius: 20,
+      },
+    });
+
+    const rider = Body.create({
+      collisionFilter: {
+        group: group,
+      },
+      parts: [head, body],
+    });
+
+    const pole = Bodies.rectangle(x, y, 80, 10, {
+      label: "pole",
+      collisionFilter: {
+        group: group,
+      },
+      chamfer: {
+        radius: height * 0.5,
+      },
+    });
+
+    const seat = Bodies.rectangle(x + 40, y, 10, 40, {
+      label: "seat",
+      collisionFilter: {
+        group: group,
+      },
+      chamfer: {
+        radius: height * 0.5,
+      },
+    });
+
+    const frame = Body.create({
+      parts: [pole, seat],
+      collisionFilter: {
+        group: group,
+      },
+    });
+
+    const wheel = Bodies.circle(x + wheelAOffset, y + wheelYOffset, wheelSize, {
+      label: "wheel",
+      collisionFilter: {
+        group: group,
+      },
+    });
+
+    const axel = Constraint.create({
+      bodyA: frame,
+      bodyB: wheel,
+      pointA: { x: -50, y: 0 },
+      length: 0,
+    });
+
+    const neck = Constraint.create({
+      bodyA: rider,
+      bodyB: frame,
+      pointA: { x: 40, y: -10 },
+      pointB: { x: 30, y: 10 },
+
+      length: 0,
+    });
+
+    const neck2 = Constraint.create({
+      bodyA: rider,
+      bodyB: frame,
+      pointA: { x: 40, y: 10 },
+      pointB: { x: 30, y: -10 },
+
+      length: 0,
+    });
+
+    const cycle = Composite.create({
+      label: "cycle",
+      bodies: [rider, frame, wheel],
+      constraints: [axel, neck, neck2],
+    });
+
+    scene.matter.world.add(cycle);
+
+    // scene.matter.world.add(rider);
+
+    /*
     const head = scene.matter.add.circle(x - 40, y, 15, {
       label: "head",
       collisionFilter: {
@@ -92,19 +188,22 @@ export class Unicycle {
     this.head = head;
     this.body = body;
     this.frame = frame;
-    this.seat = seat;
+    this.seat = seat;*/
+
+    this.frame = frame;
     this.wheel = wheel;
+    this.cycle = cycle;
     this.scene = scene;
   }
 
   update(time, delta) {
-    this.body.inverseInertia = 0;
-    this.body.inertia = Infinity;
-    this.body.angle = this.frame.angle;
-
-    this.seat.inverseInertia = 0;
-    this.seat.inertia = Infinity;
-    this.seat.angle = this.frame.angle;
+    // this.body.inverseInertia = 0;
+    // this.body.inertia = Infinity;
+    // this.body.angle = this.frame.angle;
+    //
+    // this.seat.inverseInertia = 0;
+    // this.seat.inertia = Infinity;
+    // this.seat.angle = this.frame.angle;
   }
 
   draw() {

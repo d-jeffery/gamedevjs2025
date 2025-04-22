@@ -15,7 +15,7 @@ export class GameScene extends Phaser.Scene {
   create() {
     this.matter.world.setBounds();
 
-    // this.matter.add.mouseSpring();
+    this.matter.add.mouseSpring();
 
     this.canJump = false;
 
@@ -33,9 +33,9 @@ export class GameScene extends Phaser.Scene {
       space: "SPACE",
     });
 
-    this.unicycle = new Unicycle(this, 45, 245);
+    this.unicycle = new Unicycle(this, 150, 245);
 
-    this.matter.world.add(this.unicycle);
+    // this.matter.world.add(this.unicycle);
 
     const group = this.matter.world.nextGroup(true);
 
@@ -79,9 +79,9 @@ export class GameScene extends Phaser.Scene {
     );
 
     // Generate stars
-    setInterval(() => {
-      const s = new Star(this, 50 + Math.random() * 700, 10);
-    }, 1000);
+    // setInterval(() => {
+    //   const s = new Star(this, 50 + Math.random() * 700, 10);
+    // }, 1000);
 
     for (let i = 0; i < 10; i++) {
       if (i % 2 === 0) {
@@ -123,6 +123,11 @@ export class GameScene extends Phaser.Scene {
         )
       ) {
         this.lives--;
+        // console.log(this.unicycle.cycle);
+        //
+        // this.unicycle.cycle.constraints.forEach((constraint) => {
+        //   this.matter.world.remove(constraint);
+        // });
       }
     });
 
@@ -239,7 +244,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   draw() {
-    this.unicycle.draw();
+    //this.unicycle.draw();
 
     // Rerender the chain
     this.renderedChain.forEach((chain) => {
