@@ -12,19 +12,17 @@ export class Unicycle {
     const wheelSize = 30;
 
     const group = Body.nextGroup(true);
-    const wheelAOffset = -width * 0.5;
-    const wheelYOffset = 0;
 
     this.graphics = [];
 
-    const head = Bodies.circle(x - 40, y, 15, {
+    const head = Bodies.circle(x, y - 40, 15, {
       label: "head",
       collisionFilter: {
         group: group,
       },
     });
 
-    const body = Bodies.rectangle(x, y, 60, 40, {
+    const body = Bodies.rectangle(x, y, 40, 60, {
       label: "body",
       collisionFilter: {
         group: group,
@@ -35,13 +33,14 @@ export class Unicycle {
     });
 
     const rider = Body.create({
+      label: "rider",
       collisionFilter: {
         group: group,
       },
       parts: [head, body],
     });
 
-    const pole = Bodies.rectangle(x, y, 80, 10, {
+    const pole = Bodies.rectangle(x, y + 80, 10, 80, {
       label: "pole",
       collisionFilter: {
         group: group,
@@ -51,7 +50,7 @@ export class Unicycle {
       },
     });
 
-    const seat = Bodies.rectangle(x + 40, y, 10, 40, {
+    const seat = Bodies.rectangle(x, y + 40, 40, 10, {
       label: "seat",
       collisionFilter: {
         group: group,
@@ -68,7 +67,7 @@ export class Unicycle {
       },
     });
 
-    const wheel = Bodies.circle(x + wheelAOffset, y + wheelYOffset, wheelSize, {
+    const wheel = Bodies.circle(x, y + 120, wheelSize, {
       label: "wheel",
       collisionFilter: {
         group: group,
@@ -78,25 +77,23 @@ export class Unicycle {
     const axel = Constraint.create({
       bodyA: frame,
       bodyB: wheel,
-      pointA: { x: -50, y: 0 },
+      pointA: { x: 0, y: 50 },
       length: 0,
     });
 
     const neck = Constraint.create({
       bodyA: rider,
       bodyB: frame,
-      pointA: { x: 40, y: -10 },
-      pointB: { x: 30, y: 10 },
-
+      pointA: { x: -10, y: 40 },
+      pointB: { x: -10, y: -30 },
       length: 0,
     });
 
     const neck2 = Constraint.create({
       bodyA: rider,
       bodyB: frame,
-      pointA: { x: 40, y: 10 },
-      pointB: { x: 30, y: -10 },
-
+      pointA: { x: 10, y: 40 },
+      pointB: { x: 10, y: -30 },
       length: 0,
     });
 
@@ -189,7 +186,10 @@ export class Unicycle {
     this.body = body;
     this.frame = frame;
     this.seat = seat;*/
-
+    this.head = head;
+    this.body = body;
+    this.seat = seat;
+    this.pole = pole;
     this.frame = frame;
     this.wheel = wheel;
     this.cycle = cycle;
@@ -209,14 +209,14 @@ export class Unicycle {
   draw() {
     const color = 0x000000;
 
-    this.graphics.forEach((cycle) => {
-      cycle.destroy();
+    this.graphics.forEach((g) => {
+      g.destroy();
     });
 
     this.graphics.push(renderObject(this.scene, this.head, color));
     this.graphics.push(renderObject(this.scene, this.body, color));
-    this.graphics.push(renderObject(this.scene, this.frame, color));
     this.graphics.push(renderObject(this.scene, this.seat, color));
+    this.graphics.push(renderObject(this.scene, this.pole, color));
     this.graphics.push(renderObjectStroke(this.scene, this.wheel, color, 10));
     // this.graphics.push(renderWheel(this.scene, this.wheel, color, 10));
   }

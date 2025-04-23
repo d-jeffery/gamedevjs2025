@@ -1,9 +1,8 @@
 import Phaser from "phaser";
 
-const { Composite, World } = Phaser.Physics.Matter.Matter;
+const { Composite, World, Body } = Phaser.Physics.Matter.Matter;
 
 import { Unicycle } from "./unicycle.js";
-import { Star } from "./star.js";
 import { Fan } from "./fan.js";
 import { renderObject } from "./utils.js";
 
@@ -18,6 +17,7 @@ export class GameScene extends Phaser.Scene {
     this.matter.add.mouseSpring();
 
     this.canJump = false;
+    this.isDead = false;
 
     this.score = 0;
     this.lives = 3;
@@ -33,9 +33,7 @@ export class GameScene extends Phaser.Scene {
       space: "SPACE",
     });
 
-    this.unicycle = new Unicycle(this, 150, 245);
-
-    // this.matter.world.add(this.unicycle);
+    this.unicycle = new Unicycle(this, 45, 180);
 
     const group = this.matter.world.nextGroup(true);
 
@@ -105,7 +103,7 @@ export class GameScene extends Phaser.Scene {
     this.spotlight = this.add.circle(
       this.unicycle.frame.position.x,
       this.unicycle.frame.position.y,
-      100,
+      120,
       0xffff00,
       0.5,
     );
@@ -116,20 +114,22 @@ export class GameScene extends Phaser.Scene {
 
     this.add.rexRoundRectangle(0, 500, 160, 250, 20, 0x000000, 1);
     this.add.rexRoundRectangle(800, 500, 160, 250, 20, 0x000000, 1);
-    this.matter.world.on("collisionstart", (event) => {
-      if (
-        event.pairs.some(
-          (pair) => pair.bodyA.label === "head" && pair.bodyB.label === "rope",
-        )
-      ) {
-        this.lives--;
-        // console.log(this.unicycle.cycle);
-        //
-        // this.unicycle.cycle.constraints.forEach((constraint) => {
-        //   this.matter.world.remove(constraint);
-        // });
-      }
-    });
+
+    //this.matter.world.on("collisionstart", (event) => {
+
+    //
+    // if (
+    //   event.pairs.some(
+    //     (pair) =>
+    //       (pair.bodyA.label === "body" || pair.bodyA.label === "head") &&
+    //       pair.bodyB.label === "rope",
+    //   )
+    // ) {
+
+    //this.isDead = true;
+    //this.matter.world.remove(this.unicycle.cycle);
+    //}
+    //});
 
     this.matter.world.on("collisionactive", (event) => {
       this.canJump = event.pairs.some(
@@ -173,6 +173,11 @@ export class GameScene extends Phaser.Scene {
 
   update(time, delta) {
     const Body = Phaser.Physics.Matter.Matter.Body;
+
+    // if (this.isDead) {
+    //   this.unicycle = new Unicycle(this, 45, 180);
+    //   this.isDead = false;
+    // }
 
     this.scoreText.setText("Score: " + this.score);
     let hearts = "";
@@ -228,7 +233,7 @@ export class GameScene extends Phaser.Scene {
     } else if (this.cursors.right.isDown) {
       Body.setAngularVelocity(this.unicycle.frame, 0.05);
     }
-    //
+
     this.fans.forEach((fan) => {
       fan.update(time, delta);
     });
@@ -239,12 +244,11 @@ export class GameScene extends Phaser.Scene {
     );
 
     this.unicycle.update(time, delta);
-
     this.draw();
   }
 
   draw() {
-    //this.unicycle.draw();
+    this.unicycle.draw();
 
     // Rerender the chain
     this.renderedChain.forEach((chain) => {

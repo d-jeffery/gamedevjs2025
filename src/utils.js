@@ -1,3 +1,5 @@
+const Composite = Phaser.Physics.Matter.Matter.Composite;
+
 export function renderObject(scene, obj, fillColor) {
   const graphics = scene.add.graphics();
 
