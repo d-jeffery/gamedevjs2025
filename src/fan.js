@@ -25,11 +25,11 @@ export class Fan {
     this.graphic.fillCircle(this.x, this.y, 15);
   }
 
-  update(time, delta) {
+  update(time, delta, score) {
     this.y = Phaser.Math.Linear(
       this.origin,
       this.origin - 10,
-      Math.cos(time / 100 + this.offset),
+      Math.cos(time / 100 + this.offset) * (Math.min(score, 2500) / 1000),
     );
 
     this.graphic.clear();
