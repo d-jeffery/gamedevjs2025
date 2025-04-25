@@ -168,10 +168,10 @@ export class GameScene extends Phaser.Scene {
       hearts = hearts.concat("❤️");
     }
 
-    // this.lifeText = this.add.text(10, 10, hearts, {
-    //   font: "34px Arial",
-    //   fill: "#ffffff", // Text color
-    // });
+    this.lifeText = this.add.text(10, 10, hearts, {
+      font: "34px Arial",
+      fill: "#ffffff", // Text color
+    });
 
     this.scoreText = this.add.text(10, 10, "Score: 0", {
       font: "34px Arial",
@@ -188,35 +188,57 @@ export class GameScene extends Phaser.Scene {
       this.score++;
     }
 
+    if (this.crashed) {
+      this.score -= 500;
+      this.lives--;
+      this.crashed = false;
+      if (this.score < 0) {
+        this.score = 0;
+      }
+    }
+
+    this.fans.forEach((fan) => {
+      fan.update(time, delta, this.score);
+    });
+
+    this.spotlight.setPosition(
+      this.unicycle.frame.position.x,
+      this.unicycle.frame.position.y,
+    );
+
+    this.unicycle.update(time, delta);
+    this.draw();
+
     this.scoreText.setText("Score: " + this.score);
-    /* let hearts = "";
+    let hearts = "";
     for (let i = 0; i < this.lives; i++) {
       hearts = hearts.concat("❤️");
     }
     this.lifeText.setText(hearts);
 
     if (this.lives <= 0) {
-      this.matter.pause();
       this.add
         .text(this.width / 2, this.height / 3, "Game Over", {
-          font: "64px Arial",
+          fontFamily: "awesome",
+          fontSize: 64,
           fill: "#ffffff",
         })
         .setOrigin(0.5, 0.5);
       this.add
         .text(this.width / 2, this.height / 2, "'Space' to Play again", {
-          font: "32px Arial",
+          fontFamily: "awesome",
+          fontSize: 64,
           fill: "#ffffff",
         })
         .setOrigin(0.5, 0.5);
 
       if (this.keys.space.isDown) {
-        this.registry.destroy();
-        this.events.off();
-        this.scene.restart();
+        this.scene.restart({ fans: this.fans, music: this.music });
       }
-    }*/
+      return;
+    }
 
+    // Handle controls
     if (this.keys.left.isDown) {
       Body.setAngularVelocity(this.unicycle.wheel, -0.18);
     } else if (this.keys.right.isDown) {
@@ -242,18 +264,6 @@ export class GameScene extends Phaser.Scene {
     } else if (this.cursors.right.isDown) {
       Body.setAngularVelocity(this.unicycle.rider, 0.05);
     }
-
-    this.fans.forEach((fan) => {
-      fan.update(time, delta, this.score);
-    });
-
-    this.spotlight.setPosition(
-      this.unicycle.frame.position.x,
-      this.unicycle.frame.position.y,
-    );
-
-    this.unicycle.update(time, delta);
-    this.draw();
   }
 
   draw() {

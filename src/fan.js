@@ -29,7 +29,7 @@ export class Fan {
     this.y = Phaser.Math.Linear(
       this.origin,
       this.origin - 10,
-      Math.cos(time / 100 + this.offset) * (Math.min(score, 2500) / 1000),
+      Math.cos(time / 100 + this.offset) * (Math.min(score, 10000) / 5000),
     );
 
     this.graphic.clear();
