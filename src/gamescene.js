@@ -10,7 +10,15 @@ export class GameScene extends Phaser.Scene {
   }
 
   init(data) {
-    this.fansOld = data.fans;
+    this.fans = [];
+    data.fans.forEach((fan) => {
+      const newFan = new Fan(this, fan.x, fan.y);
+      newFan.shirt = fan.shirt;
+      newFan.skin = fan.skin;
+      newFan.graphic;
+      this.fans.push(newFan);
+    });
+
     this.music = data.music;
   }
 
@@ -18,6 +26,12 @@ export class GameScene extends Phaser.Scene {
 
   create() {
     this.matter.world.setBounds(0, -100, 800, 700);
+
+    this.cameras.main.fadeIn(1000, 0, 0, 0);
+
+    this.input.keyboard.on("keydown-M", () => {
+      this.music.mute = !this.music.mute;
+    });
 
     // this.matter.add.mouseSpring();
 
@@ -52,7 +66,6 @@ export class GameScene extends Phaser.Scene {
       });
     });
 
-    this.fans = [];
     this.renderedChain = [];
 
     this.chain = this.matter.add.chain(bridge, 0.3, 0, -0.3, 0, {
@@ -85,23 +98,19 @@ export class GameScene extends Phaser.Scene {
       },
     );
 
+    this.add.rectangle(400, 560, 800, 80, 0x351e10, 1).setToBack();
+
     for (let i = 0; i < 10; i++) {
       if (i % 2 === 0) {
-        this.add.rectangle(80 * i + 40, 300, 80, 600, 0xffff00, 0.25);
+        this.add
+          .rectangle(80 * i + 40, 300, 80, 600, 0xffff00, 0.25)
+          .setToBack();
       } else {
-        this.add.rectangle(80 * i + 40, 300, 80, 600, 0xff0000, 0.25);
+        this.add
+          .rectangle(80 * i + 40, 300, 80, 600, 0xff0000, 0.25)
+          .setToBack();
       }
     }
-    this.add.rectangle(400, 560, 800, 80, 0x351e10, 1);
-
-    // Copy fans
-    this.fans = [];
-    this.fansOld.forEach((fan) => {
-      const newFan = new Fan(this, fan.x, fan.y);
-      newFan.shirt = fan.shirt;
-      newFan.skin = fan.skin;
-      this.fans.push(newFan);
-    });
 
     this.spotlight = this.add.circle(
       this.unicycle.frame.position.x,

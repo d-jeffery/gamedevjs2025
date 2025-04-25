@@ -92,9 +92,11 @@ export class MenuScene extends Phaser.Scene {
     });
     this.music.play();
     this.sound.pauseOnBlur = true;
-  }
 
-  update(time, delta) {
+    this.input.keyboard.on("keydown-M", () => {
+      this.music.mute = !this.music.mute;
+    });
+
     this.input.keyboard.once("keydown-SPACE", () => {
       this.cameras.main.fadeOut(1000, 0, 0, 0);
     });
@@ -115,7 +117,9 @@ export class MenuScene extends Phaser.Scene {
         music: this.music,
       });
     });
+  }
 
+  update(time, delta) {
     this.fans.forEach((fan) => {
       fan.update(time, delta, 50);
     });

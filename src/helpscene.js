@@ -7,21 +7,34 @@ export class HelpScene extends Phaser.Scene {
   }
 
   init(data) {
-    this.fansOld = data.fans;
+    this.fans = [];
+    data.fans.forEach((fan) => {
+      const newFan = new Fan(this, fan.x, fan.y);
+      newFan.shirt = fan.shirt;
+      newFan.skin = fan.skin;
+      newFan.graphic;
+      this.fans.push(newFan);
+    });
+
     this.music = data.music;
   }
 
   preload() {}
 
   create() {
+    this.add.rectangle(400, 560, 800, 80, 0x351e10, 1).setToBack();
+
     for (let i = 0; i < 10; i++) {
       if (i % 2 === 0) {
-        this.add.rectangle(80 * i + 40, 300, 80, 600, 0xffff00, 0.25);
+        this.add
+          .rectangle(80 * i + 40, 300, 80, 600, 0xffff00, 0.25)
+          .setToBack();
       } else {
-        this.add.rectangle(80 * i + 40, 300, 80, 600, 0xff0000, 0.25);
+        this.add
+          .rectangle(80 * i + 40, 300, 80, 600, 0xff0000, 0.25)
+          .setToBack();
       }
     }
-    this.add.rectangle(400, 560, 800, 80, 0x351e10, 1);
 
     const title = "Instructions";
     this.shadow = this.add
@@ -61,12 +74,8 @@ export class HelpScene extends Phaser.Scene {
       )
       .setOrigin(0.5, 0.5);
 
-    this.fans = [];
-    this.fansOld.forEach((fan) => {
-      const newFan = new Fan(this, fan.x, fan.y);
-      newFan.shirt = fan.shirt;
-      newFan.skin = fan.skin;
-      this.fans.push(newFan);
+    this.input.keyboard.on("keydown-M", () => {
+      this.music.mute = !this.music.mute;
     });
 
     this.input.keyboard.once("keydown-SPACE", () => {
