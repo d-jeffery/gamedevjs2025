@@ -2,6 +2,8 @@ import Phaser from "phaser";
 import RoundRectanglePlugin from "phaser3-rex-plugins/plugins/roundrectangle-plugin.js";
 
 import { GameScene } from "./gamescene.js";
+import { MenuScene } from "./menuscene.js";
+import { HelpScene } from "./helpscene.js";
 
 const config = {
   type: Phaser.AUTO,
@@ -25,7 +27,7 @@ const config = {
       },
     ],
   },
-  scene: new GameScene(),
+  scene: [MenuScene, HelpScene, GameScene],
 };
 
 const game = new Phaser.Game(config);

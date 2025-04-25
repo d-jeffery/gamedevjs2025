@@ -5,14 +5,21 @@ import { Fan } from "./fan.js";
 import { renderObject } from "./utils.js";
 
 export class GameScene extends Phaser.Scene {
-  preload() {
-    this.load.audio("theme", ["./assets/Entry_of_Gladiators.mp3"]);
+  constructor() {
+    super({ key: "GameScene" });
   }
+
+  init(data) {
+    this.fansOld = data.fans;
+    this.music = data.music;
+  }
+
+  preload() {}
 
   create() {
     this.matter.world.setBounds(0, -100, 800, 700);
 
-    this.matter.add.mouseSpring();
+    // this.matter.add.mouseSpring();
 
     this.canJump = false;
     this.airborne = true;
@@ -87,15 +94,14 @@ export class GameScene extends Phaser.Scene {
     }
     this.add.rectangle(400, 560, 800, 80, 0x351e10, 1);
 
-    // Generate fans
-    for (let i = 0; i < 14; i++) {
-      const fan = new Fan(this, 75 + 50 * i, 500);
-      this.fans.push(fan);
-    }
-    for (let i = 0; i < 13; i++) {
-      const fan = new Fan(this, 100 + 50 * i, 550);
-      this.fans.push(fan);
-    }
+    // Copy fans
+    this.fans = [];
+    this.fansOld.forEach((fan) => {
+      const newFan = new Fan(this, fan.x, fan.y);
+      newFan.shirt = fan.shirt;
+      newFan.skin = fan.skin;
+      this.fans.push(newFan);
+    });
 
     this.spotlight = this.add.circle(
       this.unicycle.frame.position.x,
@@ -164,13 +170,6 @@ export class GameScene extends Phaser.Scene {
     });
 
     this.draw();
-
-    const music = this.sound.add("theme", {
-      volume: 0.25,
-      loop: true,
-    });
-    music.play();
-    this.sound.pauseOnBlur = true;
   }
 
   update(time, delta) {
