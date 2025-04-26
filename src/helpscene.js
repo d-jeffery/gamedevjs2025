@@ -59,11 +59,12 @@ export class HelpScene extends Phaser.Scene {
       .text(
         400,
         300,
-        "The circus is in town and\nyou are the main attraction!\n\n" +
-          "Ride the unicycle and keep the fans happy;\nThe more airtime you get, the louder they cheer!\n\n" +
+        "The circus is in town and you and your\nunicycle are the main attraction!\n" +
+          "Keep the fans happy;\nThe more airtime you get, the louder they cheer!\n\n" +
           "Use the 'A' & 'D' keys to move\n" +
           "Use the 'LEFT' & 'RIGHT' arrows to balance\n" +
           "Hold 'W' to time a big bounce,\n Press 'S' for a little hop.\n\n" +
+          "Keep your balance and don't hit your head!\n" +
           "Press 'Space' to start!",
         {
           fontFamily: "awesome",

@@ -27,7 +27,7 @@ export class GameScene extends Phaser.Scene {
   preload() {}
 
   create() {
-    this.matter.world.setBounds(0, -100, 800, 700);
+    this.matter.world.setBounds(0, -200, 800, 800);
 
     this.cameras.main.fadeIn(1000, 0, 0, 0);
 
@@ -189,15 +189,20 @@ export class GameScene extends Phaser.Scene {
         skewX: 30,
         // rtl: true,
         value: 0.75,
-        label: {
-          text: "Score",
-          fontSize: "24px",
-          color: "#ffffff",
-          stroke: "#000000",
-          strokeThickness: 2,
-        },
       })
       .setOrigin(0, 0);
+
+    this.lineProgressText = this.add.text(
+      80,
+      20,
+      `Hype: ${(this.score / 100) * 30}%`,
+      {
+        fill: "#ffffff", // Text color
+        align: "center",
+        fontFamily: "awesome",
+        fontSize: 32,
+      },
+    );
 
     this.draw();
   }
@@ -212,15 +217,14 @@ export class GameScene extends Phaser.Scene {
     }
 
     if (this.crashed && this.lives > 0) {
-      this.score -= 5;
       this.lives--;
       this.crashed = false;
-      if (this.score < 0) {
-        this.score = 0;
-      }
     }
 
     this.lineProgress.setValue(this.score / 50, 0, 1);
+    this.lineProgressText.setText(
+      `Hype: ${((this.score / 50) * 100).toFixed(0)}%`,
+    );
 
     this.fans.forEach((fan) => {
       fan.update(time, delta, this.score);
