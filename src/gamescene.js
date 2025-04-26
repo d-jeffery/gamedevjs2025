@@ -1,5 +1,7 @@
 import Phaser from "phaser";
 
+import LineProgress from "phaser3-rex-plugins/plugins/lineprogress.js";
+
 import { Unicycle } from "./unicycle.js";
 import { Fan } from "./fan.js";
 import { renderObject } from "./utils.js";
@@ -170,15 +172,32 @@ export class GameScene extends Phaser.Scene {
       hearts = hearts.concat("❤️");
     }
 
-    this.lifeText = this.add.text(10, 10, hearts, {
-      font: "34px Arial",
-      fill: "#ffffff", // Text color
-    });
+    this.lifeText = this.add
+      .text(800, 10, hearts, {
+        font: "48px Arial",
+        fill: "#ffffff", // Text color
+        align: "right",
+      })
+      .setOrigin(1, 0);
 
-    this.scoreText = this.add.text(10, 10, "Score: 0", {
-      font: "34px Arial",
-      fill: "#ffffff", // Text color
-    });
+    this.lineProgress = this.add
+      .rexLineProgress(10, 10, 300, 60, {
+        barColor: 0x4e342e,
+        trackColor: 0x7b5e57,
+        trackStrokeColor: 0x000000,
+        trackStrokeThickness: 5,
+        skewX: 30,
+        // rtl: true,
+        value: 0.75,
+        label: {
+          text: "Score",
+          fontSize: "24px",
+          color: "#ffffff",
+          stroke: "#000000",
+          strokeThickness: 2,
+        },
+      })
+      .setOrigin(0, 0);
 
     this.draw();
   }
@@ -201,6 +220,8 @@ export class GameScene extends Phaser.Scene {
       }
     }
 
+    this.lineProgress.setValue(this.score / 50, 0, 1);
+
     this.fans.forEach((fan) => {
       fan.update(time, delta, this.score);
     });
@@ -213,7 +234,6 @@ export class GameScene extends Phaser.Scene {
     this.unicycle.update(time, delta);
     this.draw();
 
-    this.scoreText.setText("Score: " + this.score);
     let hearts = "";
     for (let i = 0; i < this.lives; i++) {
       hearts = hearts.concat("❤️");

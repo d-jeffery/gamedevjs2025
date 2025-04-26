@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import RoundRectanglePlugin from "phaser3-rex-plugins/plugins/roundrectangle-plugin.js";
+import LineProgressPlugin from "phaser3-rex-plugins/plugins/lineprogress-plugin.js";
 
 import { GameScene } from "./gamescene.js";
 import { MenuScene } from "./menuscene.js";
@@ -23,6 +24,11 @@ const config = {
       {
         key: "rexRoundRectanglePlugin",
         plugin: RoundRectanglePlugin,
+        start: true,
+      },
+      {
+        key: "rexLineProgressPlugin",
+        plugin: LineProgressPlugin,
         start: true,
       },
     ],
