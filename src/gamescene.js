@@ -232,6 +232,10 @@ export class GameScene extends Phaser.Scene {
         })
         .setOrigin(0.5, 0.5);
 
+      this.unicycle.cycle.constraints.forEach((constraint) => {
+        this.matter.world.removeConstraint(constraint, true);
+      });
+
       if (this.keys.space.isDown) {
         this.scene.restart({ fans: this.fans, music: this.music });
       }
