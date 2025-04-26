@@ -56,6 +56,11 @@ export class GameScene extends Phaser.Scene {
       space: "SPACE",
     });
 
+    this.ouch = this.sound.add("ouch", {
+      volume: 0.75,
+      loop: false,
+    });
+
     this.unicycle = new Unicycle(this, 45, 240);
 
     const group = this.matter.world.nextGroup(true);
@@ -219,6 +224,7 @@ export class GameScene extends Phaser.Scene {
     if (this.crashed && this.lives > 0) {
       this.lives--;
       this.crashed = false;
+      this.ouch.play();
     }
 
     this.lineProgress.setValue(this.score / 50, 0, 1);

@@ -9,7 +9,7 @@ export class MenuScene extends Phaser.Scene {
   preload() {
     this.load.font("awesome", "./assets/Awesome.ttf");
     this.load.audio("theme", ["./assets/Entry_of_Gladiators.mp3"]);
-    this.load.audio("theme", ["./assets/Entry_of_Gladiators.mp3"]);
+    this.load.audio("ouch", ["./assets/ouch-sound-effect.mp3"]);
   }
 
   create() {
