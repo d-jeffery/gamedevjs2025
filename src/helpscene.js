@@ -9,7 +9,7 @@ export class HelpScene extends Phaser.Scene {
   init(data) {
     this.fans = [];
     data.fans.forEach((fan) => {
-      const newFan = new Fan(this, fan.x, fan.y);
+      const newFan = new Fan(this, fan.x, fan.origin);
       newFan.offset = fan.offset;
       newFan.shirt = fan.shirt;
       newFan.skin = fan.skin;
