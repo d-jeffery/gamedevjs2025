@@ -130,8 +130,10 @@ export class GameScene extends Phaser.Scene {
     this.matter.world.on("collisionstart", (event) => {
       this.crashed = event.pairs.some(
         (pair) =>
-          (pair.bodyA.label === "head" && pair.bodyB.label === "rope") ||
-          (pair.bodyA.label === "rope" && pair.bodyB.label === "head"),
+          (pair.bodyA.label === "head" &&
+            (pair.bodyB.label === "rope" || pair.bodyB.label === "platform")) ||
+          ((pair.bodyA.label === "rope" || pair.bodyA.label === "platform") &&
+            pair.bodyB.label === "head"),
       );
     });
 
@@ -184,12 +186,14 @@ export class GameScene extends Phaser.Scene {
   update(time, delta) {
     const Body = Phaser.Physics.Matter.Matter.Body;
 
+    const scoreRatio = 1000;
+
     if (this.airborne) {
-      this.score++;
+      this.score += delta / scoreRatio;
     }
 
-    if (this.crashed) {
-      this.score -= 500;
+    if (this.crashed && this.lives > 0) {
+      this.score -= 5;
       this.lives--;
       this.crashed = false;
       if (this.score < 0) {

@@ -121,7 +121,7 @@ export class MenuScene extends Phaser.Scene {
 
   update(time, delta) {
     this.fans.forEach((fan) => {
-      fan.update(time, delta, 50);
+      fan.update(time, delta, 0.5);
     });
 
     const x = Math.cos(time / 500) / 10;

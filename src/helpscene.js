@@ -10,9 +10,9 @@ export class HelpScene extends Phaser.Scene {
     this.fans = [];
     data.fans.forEach((fan) => {
       const newFan = new Fan(this, fan.x, fan.y);
+      newFan.offset = fan.offset;
       newFan.shirt = fan.shirt;
       newFan.skin = fan.skin;
-      newFan.graphic;
       this.fans.push(newFan);
     });
 
@@ -95,7 +95,7 @@ export class HelpScene extends Phaser.Scene {
 
   update(time, delta) {
     this.fans.forEach((fan) => {
-      fan.update(time, delta, 50);
+      fan.update(time, delta, 0.5);
     });
   }
 }
